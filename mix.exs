@@ -9,8 +9,8 @@ defmodule Mix.Tasks.Compile.YaraElixir do
         "-flat_namespace",
         "-undefined",
         "suppress",
-        "-I/usr/local/Cellar/erlang/23.0.4/lib/erlang/usr/include",
-        "-L/usr/local/Cellar/erlang/23.0.4/lib/erlang/usr/lib",
+        "-I/usr/local/Cellar/erlang/23.2.1/lib/erlang/usr/include",
+        "-L/usr/local/Cellar/erlang/23.2.1/lib/erlang/usr/lib",
         "-lyara",
         "-L/usr/local/Cellar/yara/4.0.2/lib"
       ]
