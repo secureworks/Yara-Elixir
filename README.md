@@ -1,6 +1,6 @@
 # Yara-Elixir
 
-Proof-of-concept NIF implementation of Yara from Elixir.
+Proof-of-concept [NIF][NIF] implementation of Yara from Elixir.
 
 ## Getting Started
 
@@ -32,3 +32,4 @@ be modified according to your environment.
 [Erlang]: https://www.erlang.org
 [YARA]: https://virustotal.github.io/yara/
 [GCC]: https://gcc.gnu.org
+[NIF]: http://www1.erlang.org/doc/man/erl_nif.html
