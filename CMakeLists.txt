@@ -17,26 +17,28 @@ include_directories(${ERLANG_EI_INCLUDE_PATH})
 include_directories(${ERLANG_ERTS_INCLUDE_PATH})
 
 find_package(PkgConfig REQUIRED)
-pkg_check_modules (YARA REQUIRED IMPORTED_TARGET yara)
+pkg_check_modules(YARA REQUIRED IMPORTED_TARGET yara)
+message(STATUS "Using YARA version: ${YARA_VERSION}")
+message(STATUS "Using YARA CFLAGS: ${YARA_CFLAGS}")
+message(STATUS "Using YARA LDFLAGS: ${YARA_LDFLAGS}")
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC -Wall")
 set(TARGET_LINKER_OPTIONS)
 if(APPLE)
-	set(TARGET_LINKER_OPTIONS "-flat_namespace -undefined suppress")
-endif(APPLE)
-
-#target_sources(YE_NIF_TARGET
-#    PRIVATE
-#    ${CMAKE_CURRENT_SOURCE_DIR}/shared/yara_elixir.c}
-#)
+  set(TARGET_LINKER_OPTIONS "-flat_namespace -undefined suppress")
+endif()
 
 target_include_directories(YE_NIF_TARGET
-    PRIVATE
-    ${DEFAULT_INCLUDE_DIRECTORIES}
+  PRIVATE
+  ${DEFAULT_INCLUDE_DIRECTORIES}
 )
 
 target_link_libraries(YE_NIF_TARGET
-    PRIVATE
-    ${TARGET_LINKER_OPTIONS}
-    PkgConfig::YARA
+  PRIVATE
+  ${TARGET_LINKER_OPTIONS}
+  PkgConfig::YARA
 )
+
+set_target_properties(YE_NIF_TARGET PROPERTIES PREFIX "lib")
+set_target_properties(YE_NIF_TARGET PROPERTIES OUTPUT_NAME "yara_elixir")
+set_target_properties(YE_NIF_TARGET PROPERTIES SUFFIX ".so")
