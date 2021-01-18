@@ -15,7 +15,7 @@ defmodule YaraElixir do
   @on_load :load_nifs
 
   def load_nifs do
-    :erlang.load_nif('./yara_elixir', 0)
+    :erlang.load_nif('./libyara_elixir', 0)
   end
 
   def init_yara do
