@@ -17,4 +17,12 @@ defmodule YaraElixirTest do
       RuntimeError -> assert false
     end
   end
+
+  test "does not raise a RuntimeError on create_compiler" do
+    try do
+      YaraElixir.create_compiler()
+    rescue
+      RuntimeError -> assert false
+    end
+  end
 end

@@ -28,9 +28,20 @@ static ERL_NIF_TERM destroy_yara_nif(ErlNifEnv *env, int argc, const ERL_NIF_TER
     return enif_make_int(env, ret);
 }
 
+// Creates a YARA compiler.
+static ERL_NIF_TERM create_compiler(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[]) {
+    YR_COMPILER* compiler = NULL;
+    if (yr_compiler_create(&compiler) != ERROR_SUCCESS) {
+        perror("yr_compiler_create");
+        exit(EXIT_FAILURE);
+    }
+    return enif_make_resource(env, compiler);
+}
+
 static ErlNifFunc nif_funcs[] = {
     {"init_yara", 0, init_yara_nif},
-    {"destroy_yara", 0, destroy_yara_nif}
+    {"destroy_yara", 0, destroy_yara_nif},
+    {"create_compiler", 0, create_compiler}
 };
 
 // ERL_NIF_INIT args
