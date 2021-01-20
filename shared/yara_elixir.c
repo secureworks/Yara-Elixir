@@ -8,6 +8,30 @@ extern int init_yara();
 // Wraps the Yara finalizer
 extern int destroy_yara();
 
+static ErlNifResourceType *YARA_COMPILER;
+
+ERL_NIF_TERM atomize(ErlNifEnv *env, const char *name) {
+    ERL_NIF_TERM atom;
+    if (enif_make_existing_atom(env, name, &atom, ERL_NIF_LATIN1)) {
+        return atom;
+    }
+    return enif_make_atom(env, name);
+}
+
+ErlNifResourceType * open_resource_type(ErlNifEnv *env, const char *name) {
+    ErlNifResourceFlags flags = ERL_NIF_RT_CREATE;
+    ErlNifResourceType *ret;
+    ret = enif_open_resource_type(env, NULL, name, NULL, flags, NULL);
+    return ret;
+}
+
+static int nif_load(ErlNifEnv * env, void **priv_data, ERL_NIF_TERM load_info) {
+    const char *name = "Yara-Elixir";
+    YARA_COMPILER = open_resource_type(env, name);
+    return 0;
+}
+
+
 // Call this function when you start using Yara.
 static ERL_NIF_TERM init_yara_nif(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[]) {
     int ret;
@@ -30,21 +54,40 @@ static ERL_NIF_TERM destroy_yara_nif(ErlNifEnv *env, int argc, const ERL_NIF_TER
 
 // Creates a YARA compiler.
 static ERL_NIF_TERM create_compiler(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[]) {
-    YR_COMPILER* compiler = NULL;
-    if (yr_compiler_create(&compiler) != ERROR_SUCCESS) {
+    YR_COMPILER **compiler = enif_alloc_resource(YARA_COMPILER, sizeof(YR_COMPILER *));
+    if (yr_compiler_create(compiler) != ERROR_SUCCESS) {
         perror("yr_compiler_create");
         exit(EXIT_FAILURE);
     }
-    return enif_make_resource(env, compiler);
+    ERL_NIF_TERM term = enif_make_resource(env, compiler);
+    return term;
+}
+
+// Destroys a YARA compiler.
+static ERL_NIF_TERM destroy_compiler(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[]) {
+    if (argc != 1) {
+        return enif_make_badarg(env);
+    }
+    if (!enif_is_ref(env, argv[0])) {
+        ERL_NIF_TERM err = atomize(env, "error");
+        ERL_NIF_TERM not_a_ref = atomize(env, "not_a_reference");
+        return enif_make_tuple2(env, err, not_a_ref);
+    }
+    YR_COMPILER **compiler_res = NULL;
+    enif_get_resource(env, argv[0], YARA_COMPILER, (void *) &compiler_res);
+    YR_COMPILER *compiler = *compiler_res;
+    yr_compiler_destroy(compiler);
+    return atomize(env, "ok");
 }
 
 static ErlNifFunc nif_funcs[] = {
     {"init_yara", 0, init_yara_nif},
     {"destroy_yara", 0, destroy_yara_nif},
-    {"create_compiler", 0, create_compiler}
+    {"create_compiler", 0, create_compiler},
+    {"destroy_compiler", 1, destroy_compiler}
 };
 
 // ERL_NIF_INIT args
 //     yara_elixir - C identifier converted to a string
 //     nif_funcs - name, arity, and function pointer of each NIF
-ERL_NIF_INIT(Elixir.YaraElixir, nif_funcs, NULL, NULL, NULL, NULL)
+ERL_NIF_INIT(Elixir.YaraElixir, nif_funcs, nif_load, NULL, NULL, NULL)

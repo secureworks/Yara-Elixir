@@ -29,4 +29,8 @@ defmodule YaraElixir do
   def create_compiler do
     raise "NIF not implemented: create_compiler/0"
   end
+
+  def destroy_compiler(_compiler) do
+    raise "NIF not implemented: destroy_compiler/1"
+  end
 end

@@ -25,4 +25,13 @@ defmodule YaraElixirTest do
       RuntimeError -> assert false
     end
   end
+
+  test "does not raise a RuntimeError on destroy_compiler" do
+    try do
+      compiler = YaraElixir.create_compiler()
+      YaraElixir.destroy_compiler(compiler)
+    rescue
+      RuntimeError -> assert false
+    end
+  end
 end
