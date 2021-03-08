@@ -33,4 +33,12 @@ defmodule YaraElixir do
   def destroy_compiler(_compiler) do
     raise "NIF not implemented: destroy_compiler/1"
   end
+
+  def compile_string(_compiler, _string) do
+    raise "NIF not implemented: compile_string/2"
+  end
+
+  def compile_string_ns(_compiler, _string, _namespace) do
+    raise "NIF not implemented: compile_string/2"
+  end
 end
