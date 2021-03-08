@@ -1,12 +1,4 @@
-#include <stdio.h>
-#include <yara.h>
-#include <erl_nif.h>
-
-// Wraps the Yara initializer
-extern int init_yara();
-
-// Wraps the Yara finalizer
-extern int destroy_yara();
+#include "yara_elixir.h"
 
 static ErlNifResourceType *YARA_COMPILER;
 
@@ -36,9 +28,7 @@ static int nif_load(ErlNifEnv * env, void **priv_data, ERL_NIF_TERM load_info) {
 static ERL_NIF_TERM init_yara_nif(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[]) {
     int ret;
     ret = yr_initialize();
-#ifdef CHATTY
-    fprintf(stdout, "yr_initialize: %d\n", ret);
-#endif
+    debug("yr_initialize: %d\n", ret);
     return enif_make_int(env, ret);
 }
 
@@ -46,9 +36,7 @@ static ERL_NIF_TERM init_yara_nif(ErlNifEnv *env, int argc, const ERL_NIF_TERM a
 static ERL_NIF_TERM destroy_yara_nif(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[]) {
     int ret;
     ret = yr_finalize();
-#ifdef CHATTY
-    fprintf(stdout, "yr_finalize: %d\n", ret);
-#endif
+    debug("yr_finalize: %d\n", ret);
     return enif_make_int(env, ret);
 }
 
