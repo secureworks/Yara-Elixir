@@ -23,7 +23,6 @@ static int nif_load(ErlNifEnv * env, void **priv_data, ERL_NIF_TERM load_info) {
     return 0;
 }
 
-
 // Call this function when you start using Yara.
 static ERL_NIF_TERM init_yara_nif(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[]) {
     int ret;
