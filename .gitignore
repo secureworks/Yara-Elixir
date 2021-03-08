@@ -2,6 +2,7 @@ _build
 build
 cmake_install.cmake
 deps
+libyara_elixir.so
 
 # ignore LSP files used with clangd
 .cache

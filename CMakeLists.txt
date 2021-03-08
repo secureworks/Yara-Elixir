@@ -1,12 +1,29 @@
 cmake_minimum_required(VERSION 3.19)
 project(Yara-Elixir LANGUAGES C VERSION 0.1)
 
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/modules")
+
 set(YE_NIF_TARGET Yara-Elixir)
 set(CMAKE_C_STANDARD 11)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_BUILD_TYPE Debug)
+#set(CMAKE_BUILD_TYPE RelWithDebInfo)
+#cmake -DCMAKE_BUILD_TYPE=Debug <path and other arguments>
+#cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo <path and other arguments>
+set(COMPILE_DEBUG_FLAGS -O0 -ggdb3)
 
-add_library(YE_NIF_TARGET SHARED shared/yara_elixir.c)
+set(CMAKE_C_FLAGS_DEBUG "-DDEBUG -O0 -ggdb3")
+# set(CMAKE_C_FLAGS_MINSIZEREL "")
+# set(CMAKE_C_FLAGS_RELWITHDEBINFO "")
+# set(CMAKE_C_FLAGS_RELEASE "")
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+add_library(YE_NIF_TARGET
+  SHARED
+  shared/yara_elixir.c
+  shared/yara_elixir.h
+  shared/debug.c
+)
+
 include(FindErlang)
 
 set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} ${ERLANG_EI_LIBRARY_PATH})
