@@ -1,7 +1,9 @@
 _build
-CMakeCache.txt
-CMakeFiles
-Makefile
+build
 cmake_install.cmake
-libyara_elixir.so
 deps
+
+# ignore LSP files used with clangd
+.cache
+compile_commands.json
+compiler_flags.txt
